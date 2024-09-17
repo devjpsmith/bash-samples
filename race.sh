@@ -20,15 +20,16 @@ usage() {
 formatTime() {
   input_seconds=$1
   hours=0
-  if [ "$input_seconds" -gt 3600 ]; then
-    remaining=$((input_seconds % 60))
-    input_seconds=$((input_seconds-remaining))
-    hours=$((input_seconds/60))
-    input_seconds=$remaining
-  fi
+  
   seconds=$((input_seconds % 60))
   input_seconds=$((input_seconds - seconds))
   minutes=$((input_seconds / 60))
+
+  if [ $minutes -gt 60 ]; then
+    m=$((minutes % 60))
+    hours=$(((minutes - m) / 60))
+    minutes=$((m))
+  fi
 
   if [ $minutes -lt 10 ]; then
     minutes="0$minutes"
@@ -93,5 +94,5 @@ fi
 
 if [ $paceMode = 0 ]; then
   targetSeconds=$((seconds*distance))
-  echo "Final Time: ${GREEN}$(formatTime $targetSeconds)${NC}"
+  printf "Final Time: ${GREEN}$(formatTime $targetSeconds)${NC}\n"
 fi
